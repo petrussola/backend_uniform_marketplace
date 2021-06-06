@@ -1,18 +1,11 @@
 /* eslint-disable no-undef */
 const server = require("./api/server");
 require("dotenv").config();
-const { MongoClient } = require("mongodb");
 
 const config = require("./api/config");
+const client = require("./database/client");
 
 const port = config.port || 5000;
-
-const client = new MongoClient(config.devDbUri, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  poolSize: 50,
-  wtimeout: 2500,
-});
 
 async function run() {
   try {
