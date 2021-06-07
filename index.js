@@ -18,7 +18,7 @@ async function run() {
       console.log(`\n\n Listening on port ${port}\n\n`);
     });
   } finally {
-    await client.close();
+    // await client.close();
   }
 }
 
