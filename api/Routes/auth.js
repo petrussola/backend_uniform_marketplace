@@ -7,6 +7,7 @@ const { signup } = require("../../database/dao/users");
 // middleware
 const {
   lowerCaseAndTrimEmail,
+  checkIfEmailExists,
   checkPasswordLength,
   bcryptPassword,
 } = require("../Middleware/authMiddleware");
@@ -18,7 +19,12 @@ const authRouter = express.Router();
 
 authRouter.post(
   "/signup",
-  [lowerCaseAndTrimEmail, checkPasswordLength, bcryptPassword],
+  [
+    lowerCaseAndTrimEmail,
+    checkIfEmailExists,
+    checkPasswordLength,
+    bcryptPassword,
+  ],
   async (req, res) => {
     const { email, password } = req;
     try {

@@ -1,5 +1,16 @@
 const bcrypt = require("bcrypt");
 
+// database
+
+// dao
+const { findEmail } = require("../../database/dao/users");
+
+// client
+const client = require("../../database/client");
+
+// helpers
+const { errorHelper } = require("../Helpers/Responses");
+
 function lowerCaseAndTrimEmail(req, res, next) {
   const { email } = req.body;
   if (email) {
@@ -9,6 +20,20 @@ function lowerCaseAndTrimEmail(req, res, next) {
     res
       .status(500)
       .status({ status: "fail", message: "Email needs to be provided" });
+  }
+}
+
+async function checkIfEmailExists(req, res, next) {
+  try {
+    const { email } = req;
+    const user = await findEmail(client, email);
+    if (user && user._id) {
+      throw new Error("Email is already registered. Please select another one.");
+    } else {
+      next();
+    }
+  } catch (err) {
+    errorHelper(res, 500, err.message);
   }
 }
 
@@ -45,6 +70,7 @@ function bcryptPassword(req, res, next) {
 
 module.exports = {
   lowerCaseAndTrimEmail,
+  checkIfEmailExists,
   checkPasswordLength,
   bcryptPassword,
 };
