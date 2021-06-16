@@ -17,9 +17,7 @@ function lowerCaseAndTrimEmail(req, res, next) {
     req.email = email.trim().toLowerCase();
     next();
   } else {
-    res
-      .status(500)
-      .status({ status: "fail", message: "Email needs to be provided" });
+    errorHelper(res, 500, "Email needs to be provided");
   }
 }
 
@@ -28,7 +26,9 @@ async function checkIfEmailExists(req, res, next) {
     const { email } = req;
     const user = await findEmail(client, email);
     if (user && user._id) {
-      throw new Error("Email is already registered. Please select another one.");
+      throw new Error(
+        "Email is already registered. Please select another one."
+      );
     } else {
       next();
     }
@@ -45,10 +45,7 @@ function checkPasswordLength(req, res, next) {
     req.password = trimmedPassword;
     next();
   } else {
-    res.status(500).json({
-      status: "error",
-      message: "Password must be at least 8 characters long",
-    });
+    errorHelper(res, 500, "Password must be at least 8 characters long");
   }
 }
 
@@ -59,11 +56,11 @@ function bcryptPassword(req, res, next) {
       req.password = hash;
       next();
     } else {
-      res.status(500).json({
-        status: "error",
-        message:
-          "There was a problem processing your request. Try again later.",
-      });
+      errorHelper(
+        res,
+        500,
+        "There was a problem processing your request. Try again later."
+      );
     }
   });
 }
