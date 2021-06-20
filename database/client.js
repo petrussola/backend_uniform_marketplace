@@ -1,6 +1,6 @@
 const { MongoClient } = require("mongodb");
 
-const config = require("../api/config");
+const config = require("../api/Config/envVariables");
 
 const client = new MongoClient(config.devDbUri, {
   useNewUrlParser: true,

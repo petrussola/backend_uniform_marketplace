@@ -12,7 +12,7 @@ async function findEmail(client, email) {
     const user = await client
       .db()
       .collection("users")
-      .findOne({ email }, { projection: { email: 0, password: 0 } }); // return only _id, which is returned unless explicitely stated - https://docs.mongodb.com/drivers/node/current/fundamentals/crud/read-operations/project/
+      .findOne({ email }); // return only _id, which is returned unless explicitely stated - https://docs.mongodb.com/drivers/node/current/fundamentals/crud/read-operations/project/
     return user;
   } catch (err) {
     throw new Error(

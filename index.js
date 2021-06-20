@@ -2,7 +2,7 @@
 const server = require("./api/server");
 require("dotenv").config();
 
-const config = require("./api/config");
+const config = require("./api/config/envVariables");
 const client = require("./database/client");
 
 const port = config.port || 5000;

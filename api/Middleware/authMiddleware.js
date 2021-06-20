@@ -65,9 +65,56 @@ function bcryptPassword(req, res, next) {
   });
 }
 
+async function checkIfEmailRegistered(req, res, next) {
+  const { email } = req;
+  try {
+    const user = await findEmail(client, email);
+    if (user && user._id) {
+      req.user = user;
+      next();
+    } else {
+      throw new Error("Email is not registered. Please sign up first.");
+    }
+  } catch (err) {
+    errorHelper(res, 500, err.message);
+  }
+}
+
+function addHashedPassword(req, res, next) {
+  const { user } = req;
+  if (user && user.password) {
+    req.hashedPassword = user.password;
+    next();
+  } else {
+    errorHelper(res, 500, "Email is not registered. Please sign up first.");
+  }
+}
+
+async function checkPassword(req, res, next) {
+  const { hashedPassword } = req;
+  const { password } = req.body;
+  try {
+    bcrypt.compare(password, hashedPassword, (err, result) => {
+      if (!err && result) {
+        req.passwordIsValid = true;
+        next();
+      } else if (!err && !result) {
+        errorHelper(res, 500, "Invalid credentials.");
+      } else {
+        errorHelper(res, 500, "Something went wrong. Please try again.");
+      }
+    });
+  } catch (err) {
+    errorHelper(res, 500, err.message);
+  }
+}
+
 module.exports = {
   lowerCaseAndTrimEmail,
   checkIfEmailExists,
   checkPasswordLength,
   bcryptPassword,
+  checkIfEmailRegistered,
+  addHashedPassword,
+  checkPassword,
 };
